@@ -1,48 +1,55 @@
+import { QueryClient, useQuery } from 'react-query';
+import { dehydrate } from 'react-query/hydration';
+
 import {
   ClockIcon,
   CalendarIcon,
   LocationMarkerIcon,
   ExternalLinkIcon
 } from '@heroicons/react/solid';
+import { supabase } from '../../utils/supabaseClient';
+import { Spinner } from '@/components/Elements';
 
-const positions = [
-  {
-    id: 1,
-    title: 'Interviews',
-    duration: '20 min',
-    location: 'In Person',
-    description: 'Engineering'
-  },
-  {
-    id: 2,
-    title: 'Interviews 2',
-    duration: '15 min',
-    location: 'Zoom',
-    description: 'Engineering'
-  },
-  {
-    id: 3,
-    title: 'Interviews 3',
-    duration: '60 mins',
-    location: 'Zoom',
-    description: 'Engineering'
-  }
-];
+const fetchEvents = async () => {
+  // SupabaseClient
+  const { data, error } = await supabase.from('events').select('*');
+
+  return data;
+};
+
+const queryClient = new QueryClient();
+
+export const getServerSideProps = async () => {
+  await queryClient.prefetchQuery('events', fetchEvents);
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient)
+    }
+  };
+};
 
 export default function Events(): JSX.Element {
-  console.log('EVENT PAGE');
+  const { data, isLoading } = useQuery('events', fetchEvents);
 
+  if(isLoading) {
+    return (
+      <div className="w-full h-48 flex justify-center items-center">
+        <Spinner size="lg" />
+      </div>
+    );
+  }
   return (
     <div className="mt-12 w-11/12 mx-auto">
       <div className="bg-white shadow overflow-hidden sm:rounded-md">
         <ul role="list" className="divide-y divide-gray-200">
-          {positions.map((position) => (
-            <li key={position.id}>
+          {data?.map((event) => (
+            <li key={event.id}>
               <a href="#" className="block hover:bg-gray-50">
                 <div className="px-4 py-4 sm:px-6">
                   <div className="flex items-center justify-between">
                     <p className="text-sm font-medium text-indigo-600 truncate">
-                      {position.title}
+                      {event.title}
                     </p>
                     <div className="ml-2 flex-shrink-0 flex w-8 h-8 border hover:border-gray-200 shadow-sm">
                       <div className="mx-auto my-auto">
@@ -57,14 +64,14 @@ export default function Events(): JSX.Element {
                           className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
                           aria-hidden="true"
                         />
-                        {position.duration}
+                        {event.duration}
                       </p>
                       <p className="mt-2 flex items-center text-sm text-gray-500 sm:mt-0 sm:ml-6">
                         <LocationMarkerIcon
                           className="flex-shrink-0 mr-1.5 h-5 w-5 text-gray-400"
                           aria-hidden="true"
                         />
-                        {position.location}
+                        {event.location}
                       </p>
                     </div>
                   </div>
