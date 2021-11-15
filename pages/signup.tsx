@@ -1,15 +1,24 @@
 import Link from 'next/link';
+import * as z from 'zod';
 import { useRouter } from 'next/router';
-import { useEffect, useState, FormEvent } from 'react';
+import { useEffect, useState } from 'react';
+
+import { Form, InputField } from '@/components/Form';
+import { Button } from '@/components/Elements';
 
 import { useUser } from '../utils/useUser';
-import { User } from '@supabase/gotrue-js';
+
+const schema = z.object({
+  email: z.string().min(1, 'Required'),
+  password: z.string().min(1, 'Required')
+});
+
+type RegisterValues = {
+  email: string;
+  password: string;
+};
 
 const SignUp = () => {
-  const [newUser, setNewUser] = useState<User | null>(null);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [name, setName] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type?: string; content?: string }>({
     type: '',
@@ -18,80 +27,85 @@ const SignUp = () => {
   const router = useRouter();
   const { signUp, user } = useUser();
 
-  const handleSignup = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const handleSignup = async (email: string, password: string) => {
     setLoading(true);
     setMessage({});
     const { error, user: createdUser } = await signUp({ email, password });
     if (error) {
       setMessage({ type: 'error', content: error.message });
     } else {
-      if (createdUser) {
-        setNewUser(createdUser);
-      } else {
-        setMessage({
-          type: 'note',
-          content: 'Check your email for the confirmation link.'
-        });
-      }
+      setMessage({
+        type: 'note',
+        content: 'Check your email for the confirmation link.'
+      });
     }
     setLoading(false);
   };
 
   useEffect(() => {
-    if (newUser || user) {
-      console.log("USER Exists", newUser, user)
-      // router.replace('/account');
+    if (user) {
+      router.replace('/');
     }
-  }, [newUser, user]);
+  }, [user]);
 
-  return (
-    <div className="flex justify-center height-screen-helper">
-      <div className="flex flex-col justify-between max-w-lg p-3 m-auto w-80 ">
-        <form onSubmit={handleSignup} className="flex flex-col space-y-4">
-          {message.content && (
-            <div
-              className={`${
-                message.type === 'error' ? 'text-pink' : 'text-green'
-              } border ${
-                message.type === 'error' ? 'border-pink' : 'border-green'
-              } p-3`}
+  if (!user)
+    return (
+      <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+        <div className="sm:mx-auto sm:w-full sm:max-w-md">
+          <div className="flex justify-center"></div>
+
+          <h2 className="mt-3 text-center text-3xl font-extrabold text-gray-900">
+            Register
+          </h2>
+        </div>
+
+        <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+          <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+            <Form<RegisterValues, typeof schema>
+              onSubmit={async ({ email, password }) =>
+                await handleSignup(email, password)
+              }
+              schema={schema}
             >
-              {message.content}
+              {({ register, formState }) => (
+                <>
+                  <InputField
+                    type="email"
+                    label="Email Address"
+                    error={formState.errors['email']}
+                    registration={register('email')}
+                  />
+                  <InputField
+                    type="password"
+                    label="Password"
+                    error={formState.errors['password']}
+                    registration={register('password')}
+                  />
+                  <div>
+                    <Button
+                      type="submit"
+                      className="w-full"
+                      isLoading={loading}
+                    >
+                      Register
+                    </Button>
+                  </div>
+                </>
+              )}
+            </Form>
+            <div className="mt-2 flex items-center justify-end">
+              <div className="text-sm">
+                <Link href="/register">
+                  <a className="font-medium text-blue-600 hover:text-blue-500">
+                    Register
+                  </a>
+                </Link>
+              </div>
             </div>
-          )}
-          <input
-            type="email"
-            placeholder="Email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            required
-          />
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            required
-          />
-          <div className="pt-2 w-full flex flex-col">
-            <button type="submit">Sign up</button>
           </div>
-
-          <span className="pt-1 text-center text-sm">
-            <span className="text-accents-7">Do you have an account?</span>
-            {` `}
-            <Link href="/signin">
-              <a className="text-accent-9 font-bold hover:underline cursor-pointer">
-                Sign in.
-              </a>
-            </Link>
-          </span>
-        </form>
+        </div>
       </div>
-    </div>
-  );
+    );
 };
 
 export default SignUp;
