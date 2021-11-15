@@ -52,15 +52,15 @@ export const Drawer = ({
             >
               <div className={clsx('w-screen', sizes[size])}>
                 <div className="h-full divide-y divide-gray-200 flex flex-col bg-white shadow-xl">
-                  <div className="min-h-0 flex-1 flex flex-col py-6 overflow-y-scroll">
-                    <div className="px-4 sm:px-6">
+                  <div className="min-h-0 flex-1 flex flex-col  overflow-y-scroll">
+                    <div className="px-4 sm:px-6 py-6 bg-gray-100">
                       <div className="flex items-start justify-between">
                         <Dialog.Title className="text-lg font-medium text-gray-900">
                           {title}
                         </Dialog.Title>
                         <div className="ml-3 h-7 flex items-center">
                           <button
-                            className="bg-white rounded-md text-gray-400 hover:text-gray-500 focus:outline-none focus:ring-2 focus:ring-indigo-500"
+                            className="text-gray-600 hover:text-gray-800 focus:outline-none focus:ring-2 focus:ring-indigo-500"
                             onClick={onClose}
                           >
                             <span className="sr-only">Close panel</span>

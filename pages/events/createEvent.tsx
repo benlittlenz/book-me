@@ -4,7 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '../../utils/supabaseClient';
 
 import { Button } from '@/components/Elements';
-import { Form, FormDrawer, InputField } from '@/components/Form';
+import { Form, FormDrawer, InputField, TextAreaField } from '@/components/Form';
 
 const schema = z.object({
   title: z.string().min(1, 'Required'),
@@ -42,8 +42,10 @@ export default function CreateEvent(): JSX.Element {
         id="create-event"
         onSubmit={async (values) => {
           console.log('SUBMITTED VALUES', values);
-          const res = await supabase.from('events').insert({id: uuidv4(), ...values});
-          console.log("RSSULT >>>> ", res)
+          const res = await supabase
+            .from('events')
+            .insert({ id: uuidv4(), ...values });
+          console.log('RSSULT >>>> ', res);
         }}
         schema={schema}
       >
@@ -59,7 +61,7 @@ export default function CreateEvent(): JSX.Element {
               error={formState.errors['slug']}
               registration={register('slug')}
             />
-            <InputField
+            <TextAreaField
               label="Description"
               error={formState.errors['description']}
               registration={register('description')}
