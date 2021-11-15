@@ -1,12 +1,24 @@
 import Link from 'next/link';
+import * as z from 'zod';
 import { useRouter } from 'next/router';
-import { useEffect, useState, FormEvent } from 'react';
+import { useEffect, useState } from 'react';
+
+import { Form, InputField } from '@/components/Form';
+import { Button } from '@/components/Elements';
 
 import { useUser } from '../utils/useUser';
 
+const schema = z.object({
+  email: z.string().min(1, 'Required'),
+  password: z.string().min(1, 'Required')
+});
+
+type LoginValues = {
+  email: string;
+  password: string;
+};
+
 const SignIn = () => {
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState<{ type?: string; content?: string }>({
     type: '',
@@ -15,9 +27,7 @@ const SignIn = () => {
   const router = useRouter();
   const { user, signIn } = useUser();
 
-  const handleSignin = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-
+  const handleSignin = async (email: string, password: string) => {
     setLoading(true);
     setMessage({});
 
@@ -25,12 +35,7 @@ const SignIn = () => {
     if (error) {
       setMessage({ type: 'error', content: error.message });
     }
-    if (!password) {
-      setMessage({
-        type: 'note',
-        content: 'Check your email for the magic link.'
-      });
-    }
+    
     setLoading(false);
   };
 
@@ -41,66 +46,57 @@ const SignIn = () => {
   }, [user]);
 
   if (!user)
-    return (
-      <div className="flex justify-center height-screen-helper">
-        <div className="flex flex-col justify-between max-w-lg p-3 m-auto w-80 ">
-          <div className="flex flex-col space-y-4">
-            {message.content && (
-              <div
-                className={`${
-                  message.type === 'error' ? 'text-pink' : 'text-green'
-                } border ${
-                  message.type === 'error' ? 'border-pink' : 'border-green'
-                } p-3`}
-              >
-                {message.content}
-              </div>
-            )}
-            <form onSubmit={handleSignin} className="flex flex-col space-y-4">
-              <input
-                type="email"
-                placeholder="Email"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                required
-              />
-              <input
-                type="password"
-                placeholder="Password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-              />
-              <button type="submit">Sign in</button>
-            </form>
+  return (
+    <div className="min-h-screen bg-gray-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+      <div className="sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="flex justify-center"></div>
 
-            <span className="pt-1 text-center text-sm">
-              <span className="text-accents-7">Dont have an account?</span>
-              {` `}
-              <Link href="/signup">
-                <a className="text-accent-9 font-bold hover:underline cursor-pointer">
-                  Sign up.
+        <h2 className="mt-3 text-center text-3xl font-extrabold text-gray-900">
+          Login
+        </h2>
+      </div>
+
+      <div className="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
+        <div className="bg-white py-8 px-4 shadow sm:rounded-lg sm:px-10">
+          <Form<LoginValues, typeof schema>
+            onSubmit={async({ email, password }) => await handleSignin(email, password)}
+            schema={schema}
+          >
+            {({ register, formState }) => (
+              <>
+                <InputField
+                  type="email"
+                  label="Email Address"
+                  error={formState.errors['email']}
+                  registration={register('email')}
+                />
+                <InputField
+                  type="password"
+                  label="Password"
+                  error={formState.errors['password']}
+                  registration={register('password')}
+                />
+                <div>
+                  <Button type="submit" className="w-full" isLoading={loading}>
+                    Log in
+                  </Button>
+                </div>
+              </>
+            )}
+          </Form>
+          <div className="mt-2 flex items-center justify-end">
+            <div className="text-sm">
+              <Link href="/register">
+                <a className="font-medium text-blue-600 hover:text-blue-500">
+                  Register
                 </a>
               </Link>
-            </span>
-          </div>
-
-          <div className="flex items-center my-6">
-            <div
-              className="border-t border-accents-2 flex-grow mr-3"
-              aria-hidden="true"
-            ></div>
-            <div className="text-accents-4">Or</div>
-            <div
-              className="border-t border-accents-2 flex-grow ml-3"
-              aria-hidden="true"
-            ></div>
+            </div>
           </div>
         </div>
       </div>
-    );
-
-  return <div className="m-6">Loading</div>;
+    </div>
+  );
 };
 
 export default SignIn;

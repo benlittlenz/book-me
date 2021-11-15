@@ -1,4 +1,4 @@
-import { zodResolver } from '@hookform/resolvers/zod';
+import { zodResolver } from '@hookform/resolvers/zod/dist/zod.umd';
 import clsx from 'clsx';
 import * as React from 'react';
 import {
