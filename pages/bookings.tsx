@@ -16,9 +16,7 @@ export default function BookingCalendar(): JSX.Element {
   const [days, setDays] = useState<
     ({ disabled: boolean; date: number } | null)[]
   >([]);
-  const [selectedMonth, setSelectedMonth] = useState<number>(
-    dayjs().month()
-  );
+  const [selectedMonth, setSelectedMonth] = useState<number>(dayjs().month());
 
   const dateInvited = (): Dayjs => dayjs().month(selectedMonth);
 
@@ -37,10 +35,25 @@ export default function BookingCalendar(): JSX.Element {
     setDays(days);
   }, [selectedMonth]);
 
+  const incrementMonth = () => {
+    setSelectedMonth((selectedMonth ?? 0) + 1);
+  };
+
+  const decrementMonth = () => {
+    setSelectedMonth((selectedMonth ?? 0) - 1);
+  };
+
   return (
     <div>
       {/* Month display */}
-      <div></div>
+      <div>
+        <span className="w-1/2 text-gray-600 dark:text-white">
+          <strong className="text-gray-900 dark:text-white">
+            {dateInvited().format('MMMM').toLowerCase()}
+          </strong>{' '}
+          <span className="text-gray-500">{dateInvited().format('YYYY')}</span>
+        </span>
+      </div>
 
       {/* Calendar display */}
       <div className="grid grid-cols-7 gap-4 text-center border-b border-t dark:border-gray-800 sm:border-0">
@@ -71,7 +84,7 @@ export default function BookingCalendar(): JSX.Element {
                   'hover:border hover:border-brand dark:hover:border-white',
                   day.disabled
                     ? 'text-gray-400 font-light hover:border-0 cursor-default'
-                    : 'dark:text-white text-primary-500 font-medium',
+                    : 'dark:text-white text-primary-500 font-medium'
                 )}
               >
                 {day.date}
