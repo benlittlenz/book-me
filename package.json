@@ -24,6 +24,7 @@
     "react-hook-form": "^7.19.5",
     "react-query": "^3.32.3",
     "tailwindcss": "npm:@tailwindcss/postcss7-compat",
+    "uuid": "^8.3.2",
     "zod": "^3.11.6"
   },
   "devDependencies": {
