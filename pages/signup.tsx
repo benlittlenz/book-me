@@ -41,7 +41,7 @@ const SignUp = () => {
 
   useEffect(() => {
     if (newUser || user) {
-      console.log("USER", newUser, user)
+      console.log("USER Exists", newUser, user)
       // router.replace('/account');
     }
   }, [newUser, user]);
@@ -62,14 +62,17 @@ const SignUp = () => {
             </div>
           )}
           <input
-            placeholder="Name"
-            value=""
-            onChange={(e) => setName(e.target.value)}
-          />
-          <input
             type="email"
             placeholder="Email"
+            value={email}
             onChange={(e) => setEmail(e.target.value)}
+            required
+          />
+          <input
+            type="password"
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
             required
           />
           <div className="pt-2 w-full flex flex-col">
