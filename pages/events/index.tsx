@@ -3,7 +3,6 @@ import { dehydrate } from 'react-query/hydration';
 
 import {
   ClockIcon,
-  CalendarIcon,
   LocationMarkerIcon,
   ExternalLinkIcon
 } from '@heroicons/react/solid';
