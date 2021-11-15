@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
+import clsx from 'clsx';
 
 const daysOfWeek = [
   'Monday',
@@ -33,7 +34,9 @@ export default function BookingCalendar(): JSX.Element {
     }
 
     console.log('DAYS >>>', days);
+    setDays(days);
   }, [selectedMonth]);
+
   return (
     <div>
       {/* Month display */}
@@ -47,6 +50,33 @@ export default function BookingCalendar(): JSX.Element {
             className="uppercase text-gray-500 text-xs tracking-widest my-4"
           >
             {weekDay.toLowerCase().substring(0, 3)}
+          </div>
+        ))}
+      </div>
+      <div className="grid grid-cols-7 gap-2 text-center">
+        {days.map((day, idx) => (
+          <div
+            key={day === null ? `e-${idx}` : `day-${day.date}`}
+            style={{
+              paddingTop: '100%'
+            }}
+            className="w-full relative"
+          >
+            {day === null ? (
+              <div key={`e-${idx}`} />
+            ) : (
+              <button
+                className={clsx(
+                  'absolute w-full top-0 left-0 right-0 bottom-0 rounded-sm text-center mx-auto',
+                  'hover:border hover:border-brand dark:hover:border-white',
+                  day.disabled
+                    ? 'text-gray-400 font-light hover:border-0 cursor-default'
+                    : 'dark:text-white text-primary-500 font-medium',
+                )}
+              >
+                {day.date}
+              </button>
+            )}
           </div>
         ))}
       </div>
