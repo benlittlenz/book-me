@@ -70,6 +70,7 @@ export const UserContextProvider = (props: any) => {
 
 export const useUser = () => {
   const context = useContext(UserContext);
+  console.log("CONTEXT", context)
   if (context === undefined) {
     throw new Error(`useUser must be used within a UserContextProvider.`);
   }
