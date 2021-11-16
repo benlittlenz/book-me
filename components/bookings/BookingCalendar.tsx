@@ -13,11 +13,13 @@ const daysOfWeek = [
   'Sunday'
 ];
 
-export default function BookingCalendar(): JSX.Element {
+export default function BookingCalendar({ date, onDatePicked }: any): JSX.Element {
   const [days, setDays] = useState<
     ({ disabled: boolean; date: number } | null)[]
   >([]);
-  const [selectedMonth, setSelectedMonth] = useState<number>(dayjs().month());
+  const [selectedMonth, setSelectedMonth] = useState<number>(
+    (date || dayjs()).month()
+  );
 
   const dateInvited = (): Dayjs => dayjs().month(selectedMonth);
 
@@ -48,7 +50,7 @@ export default function BookingCalendar(): JSX.Element {
   };
 
   return (
-    <div className="mt-8 sm:mt-0 sm:min-w-[455px] w-full sm:pl-4">
+    <div className={clsx('mt-8 sm:mt-0 sm:min-w-[455px] w-full sm:pl-4')}>
       {/* Month display */}
       <div className="flex text-gray-600 font-light text-xl mb-4">
         <span className="w-1/2 text-gray-600 dark:text-white">
@@ -103,9 +105,11 @@ export default function BookingCalendar(): JSX.Element {
               <div key={`e-${idx}`} />
             ) : (
               <button
+                onClick={() => onDatePicked(dateInvited().date(day.date))}
+                disabled={day.disabled}
                 className={clsx(
                   'absolute w-full top-0 left-0 right-0 bottom-0 rounded-sm text-center mx-auto',
-                  'hover:border hover:border-brand dark:hover:border-white',
+                  'hover:border hover:border-brand',
                   day.disabled
                     ? 'text-gray-400 font-light hover:border-0 cursor-default'
                     : 'dark:text-white text-primary-500 font-medium'
