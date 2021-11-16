@@ -1,5 +1,6 @@
 // Get router variables
 import BookingCalendar from '@/components/bookings/BookingCalendar';
+import { AvailableTimes } from '@/components/bookings/BookingTimes';
 import {
   ChevronDownIcon,
   ChevronUpIcon,
@@ -10,7 +11,7 @@ import {
 import clsx from 'clsx';
 import dayjs, { Dayjs } from 'dayjs';
 import { useRouter } from 'next/router';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 
 export default function AvailabilityPage() {
   const router = useRouter();
@@ -50,7 +51,12 @@ export default function AvailabilityPage() {
         >
           <div className="bg-white border-gray-200 rounded-sm md:border">
             <div className="px-4 sm:flex sm:py-5 sm:p-4">
-              <div className={'hidden md:block pr-8 sm:border-r sm:w-1/2'}>
+              <div
+                className={clsx(
+                  'hidden md:block pr-8 sm:border-r sm:w-1/2',
+                  selectedDate ? 'sm:w-1/3' : 'sm:w-1/2'
+                )}
+              >
                 <h2 className="font-medium text-gray-500 mt-3">Joe Doe</h2>
                 <h1 className="font-cal mb-4 text-3xl font-semibold text-gray-800">
                   60 Minute interview
@@ -64,10 +70,8 @@ export default function AvailabilityPage() {
                   Interview with joe doe
                 </p>
               </div>
-
               <BookingCalendar date={selectedDate} onDatePicked={changeDate} />
-
-              {selectedDate && <div>Date has been selected!</div>}
+              {selectedDate && <AvailableTimes date={selectedDate} length={60} />}
             </div>
           </div>
         </main>

@@ -13,7 +13,15 @@ const daysOfWeek = [
   'Sunday'
 ];
 
-export default function BookingCalendar({ date, onDatePicked }: any): JSX.Element {
+type BookingProps = {
+  date: Dayjs | null;
+  onDatePicked: (day: Dayjs) => void;
+};
+
+export default function BookingCalendar({
+  date,
+  onDatePicked
+}: BookingProps): JSX.Element {
   const [days, setDays] = useState<
     ({ disabled: boolean; date: number } | null)[]
   >([]);
@@ -41,16 +49,23 @@ export default function BookingCalendar({ date, onDatePicked }: any): JSX.Elemen
     setDays(days);
   }, [selectedMonth]);
 
-  const incrementMonth = () => {
+  const increaseMonth = () => {
     setSelectedMonth((selectedMonth ?? 0) + 1);
   };
 
-  const decrementMonth = () => {
+  const decreaseMonth = () => {
     setSelectedMonth((selectedMonth ?? 0) - 1);
   };
 
   return (
-    <div className={clsx('mt-8 sm:mt-0 sm:min-w-[455px] w-full sm:pl-4')}>
+    <div
+      className={clsx(
+        'mt-8 sm:mt-0 sm:min-w-[455px] w-full sm:pl-4',
+        date
+          ? 'w-full sm:w-1/2 md:w-2/5 sm:border-r sm:pl-4 sm:pr-6 '
+          : 'w-full sm:pl-4'
+      )}
+    >
       {/* Month display */}
       <div className="flex text-gray-600 font-light text-xl mb-4">
         <span className="w-1/2 text-gray-600 dark:text-white">
@@ -61,7 +76,7 @@ export default function BookingCalendar({ date, onDatePicked }: any): JSX.Elemen
         </span>
         <div className="w-1/2 text-right text-gray-600 dark:text-gray-400">
           <button
-            onClick={decrementMonth}
+            onClick={decreaseMonth}
             className={clsx(
               'group mr-2 p-1',
               typeof selectedMonth === 'number' &&
@@ -75,7 +90,7 @@ export default function BookingCalendar({ date, onDatePicked }: any): JSX.Elemen
           >
             <ChevronLeftIcon className="group-hover:text-black dark:group-hover:text-white w-5 h-5" />
           </button>
-          <button className="group p-1" onClick={incrementMonth}>
+          <button className="group p-1" onClick={increaseMonth}>
             <ChevronRightIcon className="group-hover:text-black dark:group-hover:text-white w-5 h-5" />
           </button>
         </div>
