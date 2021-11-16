@@ -4,7 +4,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '../../utils/supabaseClient';
 
 import { Button } from '@/components/ui/Elements';
-import { Form, FormDrawer, InputField, TextAreaField } from '@/components/ui/Form';
+import {
+  Form,
+  FormDrawer,
+  InputField,
+  TextAreaField
+} from '@/components/ui/Form';
+
+import { slugify } from '../../utils/slugify';
 
 const schema = z.object({
   title: z.string().min(1, 'Required'),
@@ -22,7 +29,7 @@ type EventValues = {
   length: number;
 };
 
-export default function CreateEvent(): JSX.Element {
+export function CreateEvent(): JSX.Element {
   return (
     <FormDrawer
       isDone={false}
@@ -49,12 +56,14 @@ export default function CreateEvent(): JSX.Element {
         }}
         schema={schema}
       >
-        {({ register, formState }) => (
+        {({ register, formState, setValue }) => (
           <>
             <InputField
               label="Title"
               error={formState.errors['title']}
-              registration={register('title')}
+              registration={register('title', {
+                onChange: (e) => setValue('slug', slugify(e.target.value))
+              })}
             />
             <InputField
               label="Slug"
@@ -77,4 +86,4 @@ export default function CreateEvent(): JSX.Element {
       </Form>
     </FormDrawer>
   );
-};
+}
