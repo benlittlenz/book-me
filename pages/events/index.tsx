@@ -7,8 +7,8 @@ import {
   ExternalLinkIcon
 } from '@heroicons/react/solid';
 import { supabase } from '../../utils/supabaseClient';
-import { Spinner } from '@/components/Elements';
-import { ContentLayout } from '@/components/Layout/ContentLayout';
+import { Spinner } from '@/components/ui/Elements';
+import { ContentLayout } from '@/components/ui/Layout/ContentLayout';
 import CreateEvent from './createEvent';
 
 const fetchEvents = async () => {

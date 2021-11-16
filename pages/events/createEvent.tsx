@@ -3,8 +3,8 @@ import * as z from 'zod';
 import { v4 as uuidv4 } from 'uuid';
 import { supabase } from '../../utils/supabaseClient';
 
-import { Button } from '@/components/Elements';
-import { Form, FormDrawer, InputField, TextAreaField } from '@/components/Form';
+import { Button } from '@/components/ui/Elements';
+import { Form, FormDrawer, InputField, TextAreaField } from '@/components/ui/Form';
 
 const schema = z.object({
   title: z.string().min(1, 'Required'),

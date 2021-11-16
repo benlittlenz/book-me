@@ -6,7 +6,7 @@ import { Hydrate } from 'react-query/hydration';
 import { useState } from 'react';
 
 import { UserContextProvider } from "@/utils/useUser";
-import { MainLayout } from "@/components/Layout/MainLayout";
+import { MainLayout } from "@/components/ui/Layout/MainLayout";
 
 function MyApp({ Component, pageProps }: AppProps) {
   const [queryClient] = useState(() => new QueryClient());
