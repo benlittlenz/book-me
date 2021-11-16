@@ -4,6 +4,7 @@ module.exports = {
   transform: {
     '^.+\\.(js|jsx|ts|tsx)$': '<rootDir>/node_modules/babel-jest'
   },
+  moduleDirectories: ['node_modules', 'src'],
   moduleNameMapper: {
     '\\.(css|less|scss|sass)$': '<rootDir>/styles/__mocks__/styleMock.js',
     '^@pages/(.*)$': '<rootDir>/pages/$1',

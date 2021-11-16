@@ -27,11 +27,16 @@
       "@/utils/*": [
         "utils/*"
       ],
+      "@/hooks/*": [
+        "hooks/*"
+      ],
     }
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
+    "utils/test-utils.js",
+    "utils/test-utils.js",
     "**/*.tsx"
   ],
   "exclude": [
