@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import dayjs, { Dayjs } from 'dayjs';
 import clsx from 'clsx';
+import { ChevronLeftIcon, ChevronRightIcon } from '@heroicons/react/solid';
 
 const daysOfWeek = [
   'Monday',
@@ -27,11 +28,14 @@ export default function BookingCalendar(): JSX.Element {
     const days = Array(firstWeekday).fill(null);
     const daysInMonth = dateInvited().daysInMonth();
 
-    for (let i = 1; i <= daysInMonth; i++) {
-      days.push({ disabled: false, date: i });
-    }
+    const isBookable = (day: number) => {
+      const date: Dayjs = dateInvited().date(day);
+      return date.endOf('day').isBefore(dayjs());
+    };
 
-    console.log('DAYS >>>', days);
+    for (let i = 1; i <= daysInMonth; i++) {
+      days.push({ disabled: isBookable(i), date: i });
+    }
     setDays(days);
   }, [selectedMonth]);
 
@@ -46,13 +50,33 @@ export default function BookingCalendar(): JSX.Element {
   return (
     <div>
       {/* Month display */}
-      <div>
+      <div className="flex text-gray-600 font-light text-xl mb-4">
         <span className="w-1/2 text-gray-600 dark:text-white">
           <strong className="text-gray-900 dark:text-white">
-            {dateInvited().format('MMMM').toLowerCase()}
+            {dateInvited().format('MMMM')}
           </strong>{' '}
           <span className="text-gray-500">{dateInvited().format('YYYY')}</span>
         </span>
+        <div className="w-1/2 text-right text-gray-600 dark:text-gray-400">
+          <button
+            onClick={decrementMonth}
+            className={clsx(
+              'group mr-2 p-1',
+              typeof selectedMonth === 'number' &&
+                selectedMonth <= dayjs().month() &&
+                'text-gray-400 dark:text-gray-600'
+            )}
+            disabled={
+              typeof selectedMonth === 'number' &&
+              selectedMonth <= dayjs().month()
+            }
+          >
+            <ChevronLeftIcon className="group-hover:text-black dark:group-hover:text-white w-5 h-5" />
+          </button>
+          <button className="group p-1" onClick={incrementMonth}>
+            <ChevronRightIcon className="group-hover:text-black dark:group-hover:text-white w-5 h-5" />
+          </button>
+        </div>
       </div>
 
       {/* Calendar display */}
