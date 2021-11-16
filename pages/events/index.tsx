@@ -1,5 +1,6 @@
 import { QueryClient, useQuery } from 'react-query';
-import { dehydrate } from 'react-query/hydration';
+import { GetServerSideProps } from 'next';
+import { dehydrate, DehydratedState } from 'react-query/hydration';
 
 import {
   ClockIcon,
@@ -9,31 +10,12 @@ import {
 import { supabase } from '../../utils/supabaseClient';
 import { Spinner } from '@/components/ui/Elements';
 import { ContentLayout } from '@/components/ui/Layout/ContentLayout';
-import CreateEvent from './createEvent';
-
-const fetchEvents = async () => {
-  // SupabaseClient
-  const { data, error } = await supabase.from('events').select('*');
-
-  return data;
-};
-
-const queryClient = new QueryClient();
-
-export const getServerSideProps = async () => {
-  await queryClient.prefetchQuery('events', fetchEvents);
-
-  return {
-    props: {
-      dehydratedState: dehydrate(queryClient)
-    }
-  };
-};
+import { CreateEvent } from '../../components/events';
 
 export default function Events(): JSX.Element {
-  const { data, isLoading } = useQuery('events', fetchEvents);
+  const eventsQuery = useQuery('events', fetchEvents);
 
-  if(isLoading) {
+  if (eventsQuery.isLoading) {
     return (
       <div className="w-full h-48 flex justify-center items-center">
         <Spinner size="lg" />
@@ -49,7 +31,7 @@ export default function Events(): JSX.Element {
       <div className="mt-12 w-full mx-auto">
         <div className="bg-white shadow overflow-hidden sm:rounded-md">
           <ul role="list" className="divide-y divide-gray-200">
-            {data?.map((event) => (
+            {eventsQuery.data?.map((event) => (
               <li key={event.id}>
                 <a href="#" className="block hover:bg-gray-50">
                   <div className="px-4 py-4 sm:px-6">
@@ -91,3 +73,25 @@ export default function Events(): JSX.Element {
     </ContentLayout>
   );
 }
+
+const fetchEvents = async () => {
+  const { data, error } = await supabase.from('events').select('*');
+  if (error) {
+    throw new Error(error.message);
+  }
+
+  return data;
+};
+
+export const getServerSideProps: GetServerSideProps = async (): Promise<{
+  props: { dehydratedState: DehydratedState };
+}> => {
+  const queryClient = new QueryClient();
+  await queryClient.prefetchQuery('events', fetchEvents);
+
+  return {
+    props: {
+      dehydratedState: dehydrate(queryClient)
+    }
+  };
+};
