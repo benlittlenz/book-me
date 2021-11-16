@@ -1,7 +1,5 @@
 import { PlusIcon } from '@heroicons/react/outline';
 import * as z from 'zod';
-import { v4 as uuidv4 } from 'uuid';
-import { supabase } from '../../utils/supabaseClient';
 
 import { Button } from '@/components/ui/Elements';
 import {
@@ -12,6 +10,7 @@ import {
 } from '@/components/ui/Form';
 
 import { slugify } from '../../utils/slugify';
+import { useCreateEvent } from './api/createEvent';
 
 const schema = z.object({
   title: z.string().min(1, 'Required'),
@@ -30,9 +29,10 @@ type EventValues = {
 };
 
 export function CreateEvent(): JSX.Element {
+  const createEventMutation = useCreateEvent()
   return (
     <FormDrawer
-      isDone={false}
+      isDone={createEventMutation.isSuccess}
       triggerButton={
         <Button size="sm" startIcon={<PlusIcon className="h-4 w-4" />}>
           Create Event
@@ -40,7 +40,12 @@ export function CreateEvent(): JSX.Element {
       }
       title="Create Event"
       submitButton={
-        <Button form="create-event" type="submit" size="sm" isLoading={false}>
+        <Button
+          form="create-event"
+          type="submit"
+          size="sm"
+          isLoading={createEventMutation.isLoading}
+        >
           Submit
         </Button>
       }
@@ -48,11 +53,7 @@ export function CreateEvent(): JSX.Element {
       <Form<EventValues, typeof schema>
         id="create-event"
         onSubmit={async (values) => {
-          console.log('SUBMITTED VALUES', values);
-          const res = await supabase
-            .from('events')
-            .insert({ id: uuidv4(), ...values });
-          console.log('RSSULT >>>> ', res);
+          await createEventMutation.mutateAsync(values as any);
         }}
         schema={schema}
       >

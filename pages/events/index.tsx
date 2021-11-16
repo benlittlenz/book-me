@@ -1,4 +1,5 @@
 import { QueryClient, useQuery } from 'react-query';
+import Link from 'next/link';
 import { GetServerSideProps } from 'next';
 import { dehydrate, DehydratedState } from 'react-query/hydration';
 
@@ -12,8 +13,8 @@ import { Spinner } from '@/components/ui/Elements';
 import { ContentLayout } from '@/components/ui/Layout/ContentLayout';
 import { CreateEvent } from '../../components/events';
 
-export default function Events(): JSX.Element {
-  const eventsQuery = useQuery('events', fetchEvents);
+export default function Events() {
+  const eventsQuery = useQuery("events", fetchEvents);
 
   if (eventsQuery.isLoading) {
     return (
@@ -40,9 +41,11 @@ export default function Events(): JSX.Element {
                         {event.title}
                       </p>
                       <div className="ml-2 flex-shrink-0 flex w-8 h-8 border hover:border-gray-200 shadow-sm">
-                        <div className="mx-auto my-auto">
+                        <Link href="/events/preview">
+                        <a className="mx-auto my-auto">
                           <ExternalLinkIcon className="w-5 h-5 text-gray-400" />
-                        </div>
+                          </a>
+                        </Link>
                       </div>
                     </div>
                     <div className="mt-2 sm:flex sm:justify-between">

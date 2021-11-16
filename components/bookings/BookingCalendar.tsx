@@ -18,7 +18,7 @@ type BookingProps = {
   onDatePicked: (day: Dayjs) => void;
 };
 
-export default function BookingCalendar({
+export function BookingCalendar({
   date,
   onDatePicked
 }: BookingProps): JSX.Element {
