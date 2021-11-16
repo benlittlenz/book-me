@@ -3,8 +3,8 @@ import * as z from 'zod';
 import { useRouter } from 'next/router';
 import { useEffect, useState } from 'react';
 
-import { Form, InputField } from '@/components/Form';
-import { Button } from '@/components/Elements';
+import { Form, InputField } from '@/components/ui/Form';
+import { Button } from '@/components/ui/Elements';
 
 import { useUser } from '../utils/useUser';
 

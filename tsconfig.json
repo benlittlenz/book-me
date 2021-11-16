@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "types": [],
     "target": "es5",
     "lib": [
       "dom",
@@ -26,11 +27,16 @@
       "@/utils/*": [
         "utils/*"
       ],
+      "@/hooks/*": [
+        "hooks/*"
+      ],
     }
   },
   "include": [
     "next-env.d.ts",
     "**/*.ts",
+    "utils/test-utils.js",
+    "utils/test-utils.js",
     "**/*.tsx"
   ],
   "exclude": [
